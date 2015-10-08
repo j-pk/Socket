@@ -16,9 +16,8 @@
   <body>
     <ul id="messages"></ul>
     <form action="">
-      <input id="m" autocomplete="off" /><button>Send</button>
+      <input type="text" id="tyingBox" autocomplete="off" /><button>Send</button>
     </form>
-    <input type="text" id="toChange">
     <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
     <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
     <script>
@@ -34,20 +33,28 @@
         $('#messages').append($('<li>').text(username + ': ' + msg));
       });
 
-      function changeFunction() {
-          socket.emit('typing') 
-      }
-      $(document).ready(function() {
-          var inputbox = $("#toChange");
-          inputbox.on('change', changeFunction);
-          inputbox.on('paste', changeFunction);
+      var typingTimer;
+      var doneTypingInterval = 10;
+      var finaldoneTypingInterval = 500;
+
+      var oldData = $("p.content").html();
+      $('#tyingBox').keydown(function() {
+        clearTimeout(typingTimer);
+        if ($('#tyingBox').val) {
+          typingTimer = setTimeout(function() {
+            socket.emit('typing')
+            console.log('Something starts')
+          }, doneTypingInterval);
+        }
       });
-      window.setTimeout(function() {
-          socket.emit('stop typing');
-          var inputbox = $("#toChange");
-          inputbox.val("Set by function");
-          inputbox.trigger("change");
-      }, 3000);
+
+      $('#tyingBox').keyup(function() {
+        clearTimeout(typingTimer);
+        typingTimer = setTimeout(function() {
+          socket.emit('stop typing')
+          console.log('Something')
+        }, finaldoneTypingInterval);
+      });
     </script>
   </body>
 </html>
