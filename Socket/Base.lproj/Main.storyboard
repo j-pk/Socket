@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6211" systemVersion="14A298i" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="BYZ-38-t0r">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="8191" systemVersion="14F27" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="BYZ-38-t0r">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6204"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="8154"/>
     </dependencies>
     <scenes>
         <!--View Controller-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController id="BYZ-38-t0r" customClass="ViewController" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="Socket" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="y3c-jy-aDJ"/>
                         <viewControllerLayoutGuide type="bottom" id="wfy-db-euE"/>
@@ -15,11 +15,107 @@
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="WNb-Sw-uG3">
+                                <rect key="frame" x="20" y="550" width="444" height="30"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="30" id="eYW-7e-vh8"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits"/>
+                                <connections>
+                                    <outlet property="delegate" destination="BYZ-38-t0r" id="hzh-UI-wTi"/>
+                                </connections>
+                            </textField>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="qn7-LP-NPY">
+                                <rect key="frame" x="481" y="550" width="99" height="30"/>
+                                <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="99" id="8ka-fK-VUx"/>
+                                </constraints>
+                                <state key="normal" title="Send">
+                                    <color key="titleColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="sendMessageButtonPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="rt8-cF-Mgt"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1ly-eA-6Rd">
+                                <rect key="frame" x="20" y="506" width="99" height="30"/>
+                                <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="99" id="MPo-mp-c3I"/>
+                                </constraints>
+                                <state key="normal" title="Connect">
+                                    <color key="titleColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="connectButtonPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Qyz-cV-LJB"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="wvv-YM-GL1">
+                                <rect key="frame" x="481" y="506" width="99" height="30"/>
+                                <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="99" id="Cjw-CC-cpt"/>
+                                </constraints>
+                                <state key="normal" title="Disconnect">
+                                    <color key="titleColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="disconnectButtonPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="2jg-ra-5Y2"/>
+                                </connections>
+                            </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ZN2-tD-Meg">
+                                <rect key="frame" x="20" y="461" width="560" height="30"/>
+                                <color key="backgroundColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="30" id="DHP-VR-x9l"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="15"/>
+                                <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" editable="NO" textAlignment="natural" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Vrv-8E-p1o">
+                                <rect key="frame" x="20" y="28" width="560" height="434"/>
+                                <color key="backgroundColor" white="0.66666666666666663" alpha="0.29999999999999999" colorSpace="calibratedWhite"/>
+                                <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="16"/>
+                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                            </textView>
+                        </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="wvv-YM-GL1" firstAttribute="top" secondItem="Vrv-8E-p1o" secondAttribute="bottom" constant="44" id="0UU-Hu-bDz"/>
+                            <constraint firstItem="Vrv-8E-p1o" firstAttribute="leading" secondItem="1ly-eA-6Rd" secondAttribute="trailing" constant="-99" id="45a-vh-7cC"/>
+                            <constraint firstItem="1ly-eA-6Rd" firstAttribute="top" secondItem="Vrv-8E-p1o" secondAttribute="bottom" constant="44" id="4ci-Ab-qb1"/>
+                            <constraint firstItem="wvv-YM-GL1" firstAttribute="leading" secondItem="Vrv-8E-p1o" secondAttribute="trailing" constant="-99" id="5IH-KM-9Ej"/>
+                            <constraint firstItem="Vrv-8E-p1o" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" constant="20" id="61b-GC-Sdh"/>
+                            <constraint firstItem="WNb-Sw-uG3" firstAttribute="top" secondItem="wvv-YM-GL1" secondAttribute="bottom" constant="14" id="7lh-Vg-9wH"/>
+                            <constraint firstAttribute="trailing" secondItem="qn7-LP-NPY" secondAttribute="trailing" constant="20" id="9Ac-xw-NEe"/>
+                            <constraint firstItem="Vrv-8E-p1o" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="8" id="A1V-SF-3Mz"/>
+                            <constraint firstAttribute="trailing" secondItem="ZN2-tD-Meg" secondAttribute="trailing" constant="20" id="FDP-ED-i5G"/>
+                            <constraint firstItem="qn7-LP-NPY" firstAttribute="top" secondItem="wvv-YM-GL1" secondAttribute="bottom" constant="14" id="KGS-qX-c0k"/>
+                            <constraint firstAttribute="trailing" secondItem="Vrv-8E-p1o" secondAttribute="trailing" constant="20" id="WT0-Na-GOO"/>
+                            <constraint firstItem="wvv-YM-GL1" firstAttribute="top" secondItem="ZN2-tD-Meg" secondAttribute="bottom" constant="15" id="aRg-KH-aQB"/>
+                            <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="Vrv-8E-p1o" secondAttribute="bottom" constant="138" id="m2i-MQ-6A4"/>
+                            <constraint firstItem="WNb-Sw-uG3" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" constant="20" id="uCI-dS-aeT"/>
+                            <constraint firstItem="ZN2-tD-Meg" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" constant="20" id="uY5-pB-NAr"/>
+                            <constraint firstItem="qn7-LP-NPY" firstAttribute="leading" secondItem="WNb-Sw-uG3" secondAttribute="trailing" constant="17" id="x6Y-bL-D2H"/>
+                        </constraints>
                     </view>
+                    <connections>
+                        <outlet property="connectButton" destination="1ly-eA-6Rd" id="MOY-Fi-kbY"/>
+                        <outlet property="disconnectButton" destination="wvv-YM-GL1" id="93F-PK-tCT"/>
+                        <outlet property="isTypingStatusLabel" destination="ZN2-tD-Meg" id="ycV-yI-SdI"/>
+                        <outlet property="messageTextField" destination="WNb-Sw-uG3" id="e6Y-fx-msW"/>
+                        <outlet property="sendButton" destination="qn7-LP-NPY" id="1hQ-Ut-pzK"/>
+                        <outlet property="sendMessage" destination="qn7-LP-NPY" id="w0s-qa-HPT"/>
+                        <outlet property="textView" destination="Vrv-8E-p1o" id="fKd-io-0AK"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
+            <point key="canvasLocation" x="440" y="429"/>
         </scene>
     </scenes>
 </document>
