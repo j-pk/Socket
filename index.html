@@ -43,7 +43,6 @@
         if ($('#tyingBox').val) {
           typingTimer = setTimeout(function() {
             socket.emit('typing')
-            console.log('Something starts')
           }, doneTypingInterval);
         }
       });
@@ -52,7 +51,6 @@
         clearTimeout(typingTimer);
         typingTimer = setTimeout(function() {
           socket.emit('stop typing')
-          console.log('Something')
         }, finaldoneTypingInterval);
       });
     </script>
