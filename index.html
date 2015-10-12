@@ -6,12 +6,13 @@
       * { margin: 0; padding: 0; box-sizing: border-box; }
       body { font: 13px Helvetica, Arial; }
       form { background: #000; padding: 3px; position: fixed; bottom: 0; width: 100%; }
-      form input { border: 0; padding: 10px; width: 90%; margin-right: .5%; }
+      form input { border: 0; padding: 10px; width: 80%; margin-right: .5%; }
       form button { width: 9%; background: gray; border: none; padding: 10px; }
       #messages { list-style-type: none; margin: 0; padding: 0; }
       #messages li { padding: 5px 10px; }
       #messages li:nth-child(odd) { background: #eee; }
       #userButton { height: 40px; width: 140px; position: absolute; top:0; bottom: 0; left: 0; right: 0; margin: auto; }
+      #disconnect { width: 10%; background: gray; border: none; padding: 10px; float: right; }
     </style>
   </head>
   <body>
@@ -19,13 +20,49 @@
     <button onclick="showPrompt();" id="userButton">Click here to join chat.</button>
     <ul id="messages"></ul>
     <form action="">
-      <input type="text" id="typingBox" autocomplete="off" /><button>Send</button>
+      <input type="text" id="typingBox" autocomplete="off" /><button id="sendButton">Send</button>
+      <button id="disconnect">Disconnect</button>
     </form>
     <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
     <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
     <script>
       var socket = io.connect('http://localhost:8080');
       var isConnected = true;
+      var typingTimer;
+      var doneTypingInterval = 10;
+      var finaldoneTypingInterval = 500;
+
+      $('#disconnect').hide()
+      $('#messages').hide()
+      $('#typingBox').hide()
+      $('#sendButton').hide()
+
+      window.showPrompt = function() {
+      do {
+        var name=prompt("Please enter your name");
+      }
+      while(name.length < 4);
+        socket.emit('username', name);
+      }
+
+      $('#userButton').click(function() {
+        $(this).hide();
+        $('#disconnect').show();
+        $('#messages').show();
+        $('#typingBox').show();
+        $('#sendButton').show();
+      });
+
+      $('#disconnect').click(function() {
+        socket.emit('disconnect');
+        $('#disconnect').hide();
+        $('#messages').hide();
+        $('#typingBox').hide();
+        $('#sendButton').hide();
+        $('#userButton').show();
+        document.getElementById('userButton').textContent = 'Reload to reconnect.';
+        $('#userButton').prop('disabled', true);
+      });
       
       $('form').submit(function(){
         socket.emit('chat message', $('#typingBox').val());
@@ -54,10 +91,7 @@
         }
       });
 
-      var typingTimer;
-      var doneTypingInterval = 10;
-      var finaldoneTypingInterval = 500;
-
+      /* checks if user is typing */
       var oldData = $("p.content").html();
       $('#typingBox').keydown(function() {
         clearTimeout(typingTimer);
@@ -73,19 +107,6 @@
         typingTimer = setTimeout(function() {
           socket.emit('stop typing')
         }, finaldoneTypingInterval);
-      });
-
-      window.showPrompt = function() {
-      do {
-        var name=prompt("Please enter your name");
-      }
-      while(name.length < 4);
-        $('#myinput').val(name);
-        socket.emit('username', name);
-      }
-
-      $('#userButton').click(function() {
-        $(this).hide();
       });
 
     </script>
