@@ -11,12 +11,15 @@
       #messages { list-style-type: none; margin: 0; padding: 0; }
       #messages li { padding: 5px 10px; }
       #messages li:nth-child(odd) { background: #eee; }
+      #updates ul { max-height: 10px; }
+      #updates li { max-height: 10px; }
     </style>
   </head>
   <body>
+    <span id="updates" style ="float:right; color:red;"></span>
     <ul id="messages"></ul>
     <form action="">
-      <input type="text" id="tyingBox" autocomplete="off" /><button>Send</button>
+      <input type="text" id="typingBox" autocomplete="off" /><button>Send</button>
     </form>
     <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
     <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
@@ -24,13 +27,27 @@
       var socket = io.connect('http://localhost:8080');
       socket.emit('username', 'jo-smo')
       $('form').submit(function(){
-        socket.emit('chat message', $('#m').val());
-        $('#m' +  ' \n').val('');
+        socket.emit('chat message', $('#typingBox').val());
+        $('#typingBox' +  ' \n').val('');
         return false;
       });
       socket.on('chat message', function(username, msg){
         console.log(username, msg);
         $('#messages').append($('<li>').text(username + ': ' + msg));
+      }); 
+      socket.on('isTyping', function(data) {
+        document.getElementById('updates').textContent = data + ' is typing.';
+      });  
+      socket.on('isNotTyping', function(data) {
+        document.getElementById('updates').textContent = '';
+      });
+      
+      socket.on('user joined', function (data) {
+        $('#messages').append($('<li>').text(data + ' joined.'));
+      });
+      socket.on('user left', function (data) {
+        console.log(data)
+        $('#messages').append($('<li>').text(data + ' left.'));
       });
 
       var typingTimer;
@@ -38,16 +55,16 @@
       var finaldoneTypingInterval = 500;
 
       var oldData = $("p.content").html();
-      $('#tyingBox').keydown(function() {
+      $('#typingBox').keydown(function() {
         clearTimeout(typingTimer);
-        if ($('#tyingBox').val) {
+        if ($('#typingBox').val) {
           typingTimer = setTimeout(function() {
             socket.emit('typing')
           }, doneTypingInterval); 
         }
       });
 
-      $('#tyingBox').keyup(function() {
+      $('#typingBox').keyup(function() {
         clearTimeout(typingTimer);
         typingTimer = setTimeout(function() {
           socket.emit('stop typing')
