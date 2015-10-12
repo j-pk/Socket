@@ -11,6 +11,9 @@ io.on('connection', function(socket){
   	socket.username = name;
   	io.emit('user joined', socket.username);
   });
+    socket.on('disconnect', function () {
+    io.emit('user left', socket.username);
+  });
   socket.on('chat message', function(msg){
     io.emit('chat message', socket.username, msg);
   });
@@ -19,9 +22,6 @@ io.on('connection', function(socket){
   });
   socket.on('stop typing', function () {
   	io.emit('isNotTyping', socket.username);
-  });
-  socket.on('disconnect', function () {
-    io.emit('user left', socket.username);
   });
 });
 

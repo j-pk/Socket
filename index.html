@@ -25,6 +25,7 @@
     <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
     <script>
       var socket = io.connect('http://localhost:8080');
+      var isConnected = true;
       socket.emit('username', 'jo-smo')
       $('form').submit(function(){
         socket.emit('chat message', $('#typingBox').val());
@@ -41,13 +42,16 @@
       socket.on('isNotTyping', function(data) {
         document.getElementById('updates').textContent = '';
       });
-      
+
       socket.on('user joined', function (data) {
         $('#messages').append($('<li>').text(data + ' joined.'));
+        isConnected = true;
       });
       socket.on('user left', function (data) {
-        console.log(data)
-        $('#messages').append($('<li>').text(data + ' left.'));
+        if(isConnected) { 
+          $('#messages').append($('<li>').text(data + ' left.'));
+          isConnected = false;
+        }
       });
 
       var typingTimer;
