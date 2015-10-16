@@ -35,7 +35,21 @@ class ViewController: UIViewController, UITextFieldDelegate {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        navigationController?.navigationBar.tintColor = UIColor.grayColor()
         disconnectButton.enabled = false
+    }
+    
+    //Pop & Seek Action options
+    override func previewActionItems() -> [UIPreviewActionItem] {
+        let openAction = UIPreviewAction(title: "Connect Socket", style: .Default) { (_, _) in
+            print("Selected 'Open Socket'")
+        }
+        
+        let cancelAction = UIPreviewAction(title: "Cancel Action", style: .Destructive) { (_, _) in
+            print("Selected 'Cancel'")
+        }
+        
+        return [openAction, cancelAction]
     }
     
     func userNameAlert() {

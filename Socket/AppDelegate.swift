@@ -10,12 +10,43 @@ import UIKit
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
+    
+    //an example of static 3D Touch Icon Shortcut 
+    //(static is before the app ever launches, dynamic is after the app launces for the first time)
+    
+    //check the Info and .strings where I identify 'UIApplicationShortcutItems' and title when 3D Touch is fired 
+    
+    //enum of possible default icons 
+    
+        //UIApplicationShortcutIconTypeCompose,
+        //UIApplicationShortcutIconTypePlay,
+        //UIApplicationShortcutIconTypePause,
+        //UIApplicationShortcutIconTypeAdd,
+        //UIApplicationShortcutIconTypeLocation,
+        //UIApplicationShortcutIconTypeSearch,
+        //UIApplicationShortcutIconTypeShare
+    
+    
+    enum ShortcutIdentifier: String {
+        case goToContacts
+        case replyToMessage
+        
+        init?(fullIdentifier: String) {
+            guard let shortIdentifier = fullIdentifier.componentsSeparatedByString(".").last else { return nil }
+            self.init(rawValue: shortIdentifier)
+        }
+    }
 
     var window: UIWindow?
 
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         // Override point for customization after application launch.
+        
+        if let shortcutItem = launchOptions?[UIApplicationLaunchOptionsShortcutItemKey] as? UIApplicationShortcutItem {
+            handleShortcut(shortcutItem)
+            return false
+        }
         return true
     }
 
@@ -40,7 +71,41 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationWillTerminate(application: UIApplication) {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     }
-
+    
+    func application(application: UIApplication, performActionForShortcutItem shortcutItem: UIApplicationShortcutItem, completionHandler: (Bool) -> Void) {
+        
+        completionHandler(handleShortcut(shortcutItem))
+    }
+    
+    private func handleShortcut(shortcutItem: UIApplicationShortcutItem) -> Bool {
+        let shortcutType = shortcutItem.type
+        
+        guard let shortcutIdentifier = ShortcutIdentifier(fullIdentifier: shortcutType) else {
+            return false
+        }
+        return selectedShortcutForIdentifier(shortcutIdentifier)
+    }
+    
+    private func selectedShortcutForIdentifier(identifier: ShortcutIdentifier) -> Bool {
+        var handled = false
+        
+        switch (identifier) {
+        case .goToContacts:
+            handled = true
+        case .replyToMessage:
+            handled = true
+        }
+        
+        // Construct an alert using the details of the shortcut used to open the application.
+        let alertController = UIAlertController(title: "Shortcut Handled", message: "\"\(identifier)\"", preferredStyle: .Alert)
+        let okAction = UIAlertAction(title: "OK", style: .Default, handler: nil)
+        alertController.addAction(okAction)
+        
+        // Display an alert indicating the shortcut selected from the home screen.
+        window!.rootViewController?.presentViewController(alertController, animated: true, completion: nil)
+        
+        return handled
+    }
 
 }
 
