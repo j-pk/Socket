@@ -39,6 +39,13 @@ class ViewController: UIViewController, UITextFieldDelegate {
         disconnectButton.enabled = false
     }
     
+    override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
+        super.touchesBegan(touches, withEvent: event)
+        messageTextField.resignFirstResponder()
+        view.endEditing(true)
+        textView.endEditing(true)
+    }
+    
     //Pop & Seek Action options
     override func previewActionItems() -> [UIPreviewActionItem] {
         let openAction = UIPreviewAction(title: "Connect Socket", style: .Default) { (_, _) in
@@ -66,6 +73,11 @@ class ViewController: UIViewController, UITextFieldDelegate {
     }
 
     func addHandlers() {
+
+        socket.on("error") { [unowned self] _, _ in
+            self.textView.text.appendContentsOf("Server is down. \n")
+        }
+        
         socket.on("user joined") { [unowned self] data, _ in
             if let response = data.first as? String {
                 self.textView.text.appendContentsOf("\(response) joined. \n")
@@ -111,7 +123,7 @@ class ViewController: UIViewController, UITextFieldDelegate {
         let time = dispatch_time(DISPATCH_TIME_NOW, Int64(delay * Double(NSEC_PER_SEC)))
         dispatch_after(time, dispatch_get_main_queue(), block)
     }
-    
+
     @IBAction func connectButtonPressed(sender: AnyObject) {
         if connected == 0 {
             addHandlers()

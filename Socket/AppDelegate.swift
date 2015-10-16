@@ -14,7 +14,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     //an example of static 3D Touch Icon Shortcut 
     //(static is before the app ever launches, dynamic is after the app launces for the first time)
     
-    //check the Info and .strings where I identify 'UIApplicationShortcutItems' and title when 3D Touch is fired 
+    //check the Info plist and .strings where I identify 'UIApplicationShortcutItems' and title  
     
     //enum of possible default icons 
     
