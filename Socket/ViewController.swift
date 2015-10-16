@@ -45,7 +45,7 @@ class ViewController: UIViewController, UITextFieldDelegate {
             print("Selected 'Open Socket'")
         }
         
-        let cancelAction = UIPreviewAction(title: "Cancel Action", style: .Destructive) { (_, _) in
+        let cancelAction = UIPreviewAction(title: "Cancel", style: .Destructive) { (_, _) in
             print("Selected 'Cancel'")
         }
         
