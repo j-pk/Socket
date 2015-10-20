@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="8195" systemVersion="14F27" minimumToolsVersion="Xcode 7.0">
+    <entity name="Message" representedClassName=".Message" syncable="YES">
+        <attribute name="date" optional="YES" attributeType="Date" syncable="YES"/>
+        <relationship name="messages" optional="YES" maxCount="1" deletionRule="Nullify" ordered="YES" destinationEntity="Person" inverseName="person" inverseEntity="Person" syncable="YES"/>
+    </entity>
+    <entity name="Person" representedClassName=".Person" syncable="YES">
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="person" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Message" inverseName="messages" inverseEntity="Message" syncable="YES"/>
+    </entity>
+    <elements>
+        <element name="Person" positionX="295" positionY="72" width="128" height="73"/>
+        <element name="Message" positionX="18" positionY="72" width="128" height="73"/>
+    </elements>
+</model>
