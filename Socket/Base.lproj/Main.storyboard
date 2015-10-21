@@ -24,7 +24,7 @@
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Login to Socket" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="XKq-hQ-4KF">
                                             <rect key="frame" x="8" y="24" width="584" height="21"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                            <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                             <nil key="highlightedColor"/>
                                         </label>
                                     </subviews>
@@ -128,36 +128,49 @@
                                             <rect key="frame" x="0.0" y="0.0" width="560" height="55"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="message" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="OG1-rm-3pZ">
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="username" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="d5x-1N-cHN">
+                                                    <rect key="frame" x="8" y="8" width="66" height="39"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="width" constant="66" id="KXl-rB-MnX"/>
+                                                    </constraints>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                                                    <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="00:00" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="znS-az-nuE">
+                                                    <rect key="frame" x="82" y="8" width="42" height="39"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="width" constant="42" id="QnT-rr-xL7"/>
+                                                    </constraints>
+                                                    <fontDescription key="fontDescription" type="system" weight="light" pointSize="10"/>
+                                                    <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <textView multipleTouchEnabled="YES" contentMode="scaleToFill" scrollEnabled="NO" editable="NO" text="message" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="NqC-jc-z5F">
                                                     <rect key="frame" x="132" y="8" width="420" height="39"/>
-                                                    <constraints>
-                                                        <constraint firstAttribute="width" constant="420" id="F91-19-un7"/>
-                                                    </constraints>
                                                     <fontDescription key="fontDescription" type="system" pointSize="12"/>
-                                                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
-                                                    <nil key="highlightedColor"/>
-                                                </label>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="username" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="d5x-1N-cHN">
-                                                    <rect key="frame" x="8" y="8" width="116" height="39"/>
-                                                    <constraints>
-                                                        <constraint firstAttribute="width" constant="116" id="gj9-g8-akx"/>
-                                                    </constraints>
-                                                    <fontDescription key="fontDescription" type="system" pointSize="12"/>
-                                                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
-                                                    <nil key="highlightedColor"/>
-                                                </label>
+                                                    <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                                                    <connections>
+                                                        <outlet property="delegate" destination="BYZ-38-t0r" id="7TY-XS-yd0"/>
+                                                    </connections>
+                                                </textView>
                                             </subviews>
                                             <constraints>
-                                                <constraint firstAttribute="topMargin" secondItem="d5x-1N-cHN" secondAttribute="top" id="08u-13-elW"/>
-                                                <constraint firstAttribute="bottomMargin" secondItem="OG1-rm-3pZ" secondAttribute="bottom" id="BOk-HW-Txf"/>
-                                                <constraint firstAttribute="bottomMargin" secondItem="d5x-1N-cHN" secondAttribute="bottom" id="HJq-QE-5wW"/>
-                                                <constraint firstAttribute="leadingMargin" secondItem="d5x-1N-cHN" secondAttribute="leading" id="Jax-CA-8Ox"/>
-                                                <constraint firstItem="OG1-rm-3pZ" firstAttribute="leading" secondItem="d5x-1N-cHN" secondAttribute="trailing" constant="8" id="esO-Az-Dqp"/>
-                                                <constraint firstAttribute="topMargin" secondItem="OG1-rm-3pZ" secondAttribute="top" id="uaE-Vp-vPY"/>
+                                                <constraint firstItem="NqC-jc-z5F" firstAttribute="trailing" secondItem="W4W-7D-Pr8" secondAttribute="trailingMargin" id="4u6-fa-lv6"/>
+                                                <constraint firstItem="NqC-jc-z5F" firstAttribute="top" secondItem="W4W-7D-Pr8" secondAttribute="topMargin" id="5vM-fB-KXO"/>
+                                                <constraint firstItem="NqC-jc-z5F" firstAttribute="bottom" secondItem="W4W-7D-Pr8" secondAttribute="bottomMargin" id="6RX-aP-UYc"/>
+                                                <constraint firstItem="d5x-1N-cHN" firstAttribute="bottom" secondItem="W4W-7D-Pr8" secondAttribute="bottomMargin" id="ERQ-kV-hvI"/>
+                                                <constraint firstItem="NqC-jc-z5F" firstAttribute="leading" secondItem="znS-az-nuE" secondAttribute="trailing" constant="8" id="Gyu-IG-c0u"/>
+                                                <constraint firstItem="znS-az-nuE" firstAttribute="top" secondItem="W4W-7D-Pr8" secondAttribute="topMargin" id="Ld9-UN-uBE"/>
+                                                <constraint firstItem="znS-az-nuE" firstAttribute="leading" secondItem="d5x-1N-cHN" secondAttribute="trailing" constant="8" id="PR7-YH-Zsm"/>
+                                                <constraint firstItem="znS-az-nuE" firstAttribute="bottom" secondItem="W4W-7D-Pr8" secondAttribute="bottomMargin" id="Uq8-Li-sHP"/>
+                                                <constraint firstItem="d5x-1N-cHN" firstAttribute="leading" secondItem="W4W-7D-Pr8" secondAttribute="leadingMargin" id="dvq-DU-srt"/>
+                                                <constraint firstItem="d5x-1N-cHN" firstAttribute="top" secondItem="W4W-7D-Pr8" secondAttribute="topMargin" id="v8g-AY-SD2"/>
                                             </constraints>
                                         </tableViewCellContentView>
                                         <connections>
-                                            <outlet property="textMessageCell" destination="OG1-rm-3pZ" id="qyV-sj-u1b"/>
+                                            <outlet property="messageTextView" destination="NqC-jc-z5F" id="ipy-7D-LaF"/>
+                                            <outlet property="timeLabel" destination="znS-az-nuE" id="rSV-ra-nmr"/>
                                             <outlet property="usernameLabel" destination="d5x-1N-cHN" id="fIZ-02-G5y"/>
                                         </connections>
                                     </tableViewCell>

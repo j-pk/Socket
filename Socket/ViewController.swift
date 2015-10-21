@@ -14,7 +14,6 @@ class ViewController: UIViewController, UITextFieldDelegate {
     
     @IBOutlet weak var sendMessage: UIButton!
     @IBOutlet weak var messageTextField: UITextField!
-    @IBOutlet weak var textView: UITextView!
     @IBOutlet weak var isTypingStatusLabel: UILabel!
     @IBOutlet weak var connectButton: UIButton!
     @IBOutlet weak var disconnectButton: UIButton!
@@ -50,6 +49,8 @@ class ViewController: UIViewController, UITextFieldDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        tableView.estimatedRowHeight = 44.0 // Replace with your actual estimation
+        tableView.rowHeight = UITableViewAutomaticDimension
         navigationController?.navigationBar.tintColor = UIColor.grayColor()
         disconnectButton.enabled = false
         
@@ -68,14 +69,13 @@ class ViewController: UIViewController, UITextFieldDelegate {
         } catch let error as NSError {
             print("Error: \(error.localizedDescription)")
         }
-
+        
     }
   
     override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
         super.touchesBegan(touches, withEvent: event)
         messageTextField.resignFirstResponder()
         view.endEditing(true)
-        textView.endEditing(true)
     }
     
     //Pop & Seek Action options
@@ -125,7 +125,6 @@ class ViewController: UIViewController, UITextFieldDelegate {
                     }
                 }
                 self.coreDataStack.saveContext()
-    
             }
         }
 
@@ -199,9 +198,14 @@ class ViewController: UIViewController, UITextFieldDelegate {
     
     func configureCell(cell: MessageTableViewCell, indexPath: NSIndexPath) {
         
+        cell.messageTextView.contentInset = UIEdgeInsetsMake(10, 5, 5, 5)
+        
         if let person = fetchedResultsController.objectAtIndexPath(indexPath) as? Message {
             cell.usernameLabel.text = person.person?.name
-            cell.textMessageCell.text = person.chatMessage
+            if let date = person.date {
+                cell.timeLabel.text = dateFormatter.stringFromDate(date)
+            }
+            cell.messageTextView.text = person.chatMessage
         }
     
     }
@@ -257,6 +261,16 @@ extension ViewController: UITableViewDataSource {
         configureCell(cell, indexPath: indexPath)
         
         return cell 
+    }
+}
+
+extension ViewController: UITableViewDelegate {
+    func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+        let cell = tableView.dequeueReusableCellWithIdentifier("messageCell") as! MessageTableViewCell
+        
+        print(cell.messageTextView.frame.height)
+        
+        return 44.0
     }
 }
 

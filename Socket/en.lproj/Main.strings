@@ -1,0 +1,24 @@
+
+/* Class = "UIButton"; normalTitle = "Connect"; ObjectID = "1ly-eA-6Rd"; */
+"1ly-eA-6Rd.normalTitle" = "Connect";
+
+/* Class = "UINavigationItem"; title = "Touch or Long Press for Pop & Seek"; ObjectID = "6U3-GA-W2M"; */
+"6U3-GA-W2M.title" = "Touch or Long Press for Pop & Seek";
+
+/* Class = "UITextView"; text = "message"; ObjectID = "NqC-jc-z5F"; */
+"NqC-jc-z5F.text" = "message";
+
+/* Class = "UILabel"; text = "Login to Socket"; ObjectID = "XKq-hQ-4KF"; */
+"XKq-hQ-4KF.text" = "Login to Socket";
+
+/* Class = "UILabel"; text = "username"; ObjectID = "d5x-1N-cHN"; */
+"d5x-1N-cHN.text" = "username";
+
+/* Class = "UIButton"; normalTitle = "Send"; ObjectID = "qn7-LP-NPY"; */
+"qn7-LP-NPY.normalTitle" = "Send";
+
+/* Class = "UIButton"; normalTitle = "Disconnect"; ObjectID = "wvv-YM-GL1"; */
+"wvv-YM-GL1.normalTitle" = "Disconnect";
+
+/* Class = "UILabel"; text = "00:00"; ObjectID = "znS-az-nuE"; */
+"znS-az-nuE.text" = "00:00";

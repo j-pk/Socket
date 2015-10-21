@@ -39,6 +39,7 @@
 		C05338691BD14CD700D61AF7 /* InfoPlist.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; path = InfoPlist.strings; sourceTree = "<group>"; };
 		C053386D1BD15AD800D61AF7 /* TableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TableViewCell.swift; path = ../TableViewCell.swift; sourceTree = "<group>"; };
 		C053386F1BD15AE900D61AF7 /* TableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TableViewController.swift; sourceTree = "<group>"; };
+		C07EBDD81BD8327200C824B3 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Main.strings; sourceTree = "<group>"; };
 		C081C5671BC56824001DC147 /* Socket.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Socket.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C081C56A1BC56824001DC147 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		C081C56C1BC56824001DC147 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -277,6 +278,7 @@
 			isa = PBXVariantGroup;
 			children = (
 				C081C56F1BC56824001DC147 /* Base */,
+				C07EBDD81BD8327200C824B3 /* en */,
 			);
 			name = Main.storyboard;
 			sourceTree = "<group>";
