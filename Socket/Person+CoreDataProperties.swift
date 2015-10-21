@@ -2,7 +2,7 @@
 //  Person+CoreDataProperties.swift
 //  
 //
-//  Created by Jameson Kirby on 10/20/15.
+//  Created by Jameson Kirby on 10/21/15.
 //
 //
 //  Choose "Create NSManagedObject Subclass…" from the Core Data editor menu
@@ -15,6 +15,6 @@ import CoreData
 extension Person {
 
     @NSManaged var name: String?
-    @NSManaged var person: NSSet?
+    @NSManaged var messages: NSOrderedSet?
 
 }

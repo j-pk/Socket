@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import CoreData
 import Socket_IO_Client_Swift
 
 class ViewController: UIViewController, UITextFieldDelegate {
@@ -19,6 +20,21 @@ class ViewController: UIViewController, UITextFieldDelegate {
     @IBOutlet weak var disconnectButton: UIButton!
     @IBOutlet weak var sendButton: UIButton!
     
+    let defaults = NSUserDefaults.standardUserDefaults()
+    var managedObjectContext: NSManagedObjectContext!
+    lazy var coreDataStack = CoreDataStack()
+    var fetchedResultsController: NSFetchedResultsController!
+    var currentUser: Person!
+    
+    var timer: NSTimer? = nil
+    var connected = 0
+    
+    lazy var dateFormatter: NSDateFormatter = {
+        let formatter = NSDateFormatter()
+        formatter.timeStyle = .ShortStyle
+        return formatter
+    }()
+    
     //Use your IP
     let socket = SocketIOClient(socketURL: "192.168.0.24:8080", opts: ["log": true])
     var userName: String? {
@@ -29,16 +45,34 @@ class ViewController: UIViewController, UITextFieldDelegate {
             defaults.setValue(newValue, forKey: "USERNAME")
         }
     }
-    let defaults = NSUserDefaults.standardUserDefaults()
-    var timer: NSTimer? = nil
-    var connected = 0
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         navigationController?.navigationBar.tintColor = UIColor.grayColor()
         disconnectButton.enabled = false
+        
+        //Core Data
+        managedObjectContext = coreDataStack.context
+        
+        let request = NSFetchRequest(entityName: "Person")
+        let messageRequest = NSFetchRequest(entityName: "Message")
+        let sortDescriptor = NSSortDescriptor(key: "name", ascending: true)
+        request.sortDescriptors = [sortDescriptor]
+        fetchedResultsController = NSFetchedResultsController(fetchRequest: request, managedObjectContext: managedObjectContext, sectionNameKeyPath: nil, cacheName: nil)
+        
+        do {
+            let results = try managedObjectContext.executeFetchRequest(request) as! [Person]
+            let messageResults = try managedObjectContext.executeFetchRequest(messageRequest) as! [Message]
+            for (result, messageResult) in zip(results, messageResults) {
+                textView.text.appendContentsOf("\(dateFormatter.stringFromDate(messageResult.date!)) - \(result.name!): \(messageResult.chatMessage!) \n")
+            }
+        } catch let error as NSError {
+            print("Could not fetch \(error), \(error.userInfo)")
+        }
+
     }
-    
+  
     override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
         super.touchesBegan(touches, withEvent: event)
         messageTextField.resignFirstResponder()
@@ -94,6 +128,28 @@ class ViewController: UIViewController, UITextFieldDelegate {
         socket.on("chat message") { [unowned self] data, _ in
             if let response = data as? [String] {
                 self.textView.text.appendContentsOf("\(response[0]): \(response[1]) \n")
+                
+                //Lining up 'Repos' to commit changes
+                let messageEntity = NSEntityDescription.entityForName("Message", inManagedObjectContext: self.managedObjectContext)
+                let personEntity = NSEntityDescription.entityForName("Person", inManagedObjectContext: self.managedObjectContext)
+                let message = Message(entity: messageEntity!, insertIntoManagedObjectContext: self.managedObjectContext)
+                self.currentUser = Person(entity: personEntity!, insertIntoManagedObjectContext: self.managedObjectContext)
+                
+                //'Sync' data
+                self.currentUser.name = response[0]
+                message.chatMessage = response[1]
+                message.date = NSDate()
+                
+                let messages = self.currentUser.messages!.mutableCopy() as! NSMutableOrderedSet
+                messages.addObject(message)
+                self.currentUser.messages = messages.copy() as? NSOrderedSet
+                
+                do {
+                    //Commits saved
+                    try self.managedObjectContext.save()
+                } catch let error as NSError {
+                    print("Could not save: \(error)")
+                }
             }
         }
         
@@ -159,6 +215,18 @@ class ViewController: UIViewController, UITextFieldDelegate {
         socket.emit("chat message", withItems: [self.messageTextField.text!])
         self.messageTextField.text = ""
         self.resignFirstResponder()
+    }
+}
+
+extension ViewController: UITableViewDataSource {
+    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return 0
+    }
+    
+    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCellWithIdentifier("messageCell") as! MessageTableViewCell
+        
+        return cell 
     }
 }
 

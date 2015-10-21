@@ -9,5 +9,6 @@ This project uses Socket.IO, node.js, and Swift 2 implementation to make a simpl
 * Cross platform (iOS & Broswer)
 * 3D Touch Quick Action / UIApplicationShortcutItem
 * Pop & Seek / Preview Actions
+* Leverages Core Data to retain message history
 
 Check the index.html / index.js to make modifications to the client or server side. Be sure to modify your IP in the iOS project. 
