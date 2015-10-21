@@ -19,6 +19,7 @@ class ViewController: UIViewController, UITextFieldDelegate {
     @IBOutlet weak var connectButton: UIButton!
     @IBOutlet weak var disconnectButton: UIButton!
     @IBOutlet weak var sendButton: UIButton!
+    @IBOutlet weak var tableView: UITableView!
     
     let defaults = NSUserDefaults.standardUserDefaults()
     var managedObjectContext: NSManagedObjectContext!
@@ -55,20 +56,17 @@ class ViewController: UIViewController, UITextFieldDelegate {
         //Core Data
         managedObjectContext = coreDataStack.context
         
-        let request = NSFetchRequest(entityName: "Person")
-        let messageRequest = NSFetchRequest(entityName: "Message")
-        let sortDescriptor = NSSortDescriptor(key: "name", ascending: true)
-        request.sortDescriptors = [sortDescriptor]
+        let request = NSFetchRequest(entityName: "Message")
+        let sortDescriptor = NSSortDescriptor(key: "chatMessage", ascending: false)
+        let sortDateDescriptor = NSSortDescriptor(key: "date", ascending: true)
+        request.sortDescriptors = [sortDateDescriptor, sortDescriptor]
         fetchedResultsController = NSFetchedResultsController(fetchRequest: request, managedObjectContext: managedObjectContext, sectionNameKeyPath: nil, cacheName: nil)
+        fetchedResultsController.delegate = self
         
         do {
-            let results = try managedObjectContext.executeFetchRequest(request) as! [Person]
-            let messageResults = try managedObjectContext.executeFetchRequest(messageRequest) as! [Message]
-            for (result, messageResult) in zip(results, messageResults) {
-                textView.text.appendContentsOf("\(dateFormatter.stringFromDate(messageResult.date!)) - \(result.name!): \(messageResult.chatMessage!) \n")
-            }
+            try fetchedResultsController.performFetch()
         } catch let error as NSError {
-            print("Could not fetch \(error), \(error.userInfo)")
+            print("Error: \(error.localizedDescription)")
         }
 
     }
@@ -109,25 +107,43 @@ class ViewController: UIViewController, UITextFieldDelegate {
     func addHandlers() {
 
         socket.on("error") { [unowned self] _, _ in
-            self.textView.text.appendContentsOf("Server is down. \n")
+            if let message = NSEntityDescription.insertNewObjectForEntityForName("Message", inManagedObjectContext: self.coreDataStack.context) as? Message {
+                message.chatMessage = "Server is down. \n"
+                self.runAfterDelay(5) {
+                    self.managedObjectContext.deleteObject(message)
+                }
+            }
+            self.coreDataStack.saveContext()
         }
         
         socket.on("user joined") { [unowned self] data, _ in
             if let response = data.first as? String {
-                self.textView.text.appendContentsOf("\(response) joined. \n")
+                if let message = NSEntityDescription.insertNewObjectForEntityForName("Message", inManagedObjectContext: self.coreDataStack.context) as? Message {
+                    message.chatMessage = "\(response) joined. \n"
+                    self.runAfterDelay(5) {
+                        self.managedObjectContext.deleteObject(message)
+                    }
+                }
+                self.coreDataStack.saveContext()
+    
             }
         }
 
         socket.on("user left") { [unowned self] data, _ in
             print("Data Response: \(data)")
             if let response = data.first as? String {
-                self.textView.text.appendContentsOf("\(response) left. \n")
+                if let message = NSEntityDescription.insertNewObjectForEntityForName("Message", inManagedObjectContext: self.coreDataStack.context) as? Message {
+                    message.chatMessage = "\(response) left. \n"
+                    self.runAfterDelay(5) {
+                        self.managedObjectContext.deleteObject(message)
+                    }
+                }
+                self.coreDataStack.saveContext()
             }
         }
 
         socket.on("chat message") { [unowned self] data, _ in
             if let response = data as? [String] {
-                self.textView.text.appendContentsOf("\(response[0]): \(response[1]) \n")
                 
                 //Lining up 'Repos' to commit changes
                 let messageEntity = NSEntityDescription.entityForName("Message", inManagedObjectContext: self.managedObjectContext)
@@ -140,9 +156,10 @@ class ViewController: UIViewController, UITextFieldDelegate {
                 message.chatMessage = response[1]
                 message.date = NSDate()
                 
-                let messages = self.currentUser.messages!.mutableCopy() as! NSMutableOrderedSet
-                messages.addObject(message)
-                self.currentUser.messages = messages.copy() as? NSOrderedSet
+                if let messages = self.currentUser.messages?.mutableCopy() as? NSMutableOrderedSet {
+                    messages.addObject(message)
+                    self.currentUser.messages = messages.copy() as? NSOrderedSet
+                }
                 
                 do {
                     //Commits saved
@@ -178,6 +195,15 @@ class ViewController: UIViewController, UITextFieldDelegate {
     func runAfterDelay(delay: NSTimeInterval, block: dispatch_block_t) {
         let time = dispatch_time(DISPATCH_TIME_NOW, Int64(delay * Double(NSEC_PER_SEC)))
         dispatch_after(time, dispatch_get_main_queue(), block)
+    }
+    
+    func configureCell(cell: MessageTableViewCell, indexPath: NSIndexPath) {
+        
+        if let person = fetchedResultsController.objectAtIndexPath(indexPath) as? Message {
+            cell.usernameLabel.text = person.person?.name
+            cell.textMessageCell.text = person.chatMessage
+        }
+    
     }
 
     @IBAction func connectButtonPressed(sender: AnyObject) {
@@ -219,14 +245,57 @@ class ViewController: UIViewController, UITextFieldDelegate {
 }
 
 extension ViewController: UITableViewDataSource {
+    
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 0
+        let sectionInfo = fetchedResultsController.sections![section]
+        return sectionInfo.numberOfObjects
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("messageCell") as! MessageTableViewCell
         
+        configureCell(cell, indexPath: indexPath)
+        
         return cell 
+    }
+}
+
+extension ViewController: NSFetchedResultsControllerDelegate {
+    
+    func controllerWillChangeContent(controller: NSFetchedResultsController) {
+        tableView.beginUpdates()
+    }
+    
+    func controller(controller: NSFetchedResultsController, didChangeObject anObject: AnyObject, atIndexPath indexPath: NSIndexPath?, forChangeType type: NSFetchedResultsChangeType, newIndexPath: NSIndexPath?) {
+        switch type {
+        case .Insert:
+            tableView.insertRowsAtIndexPaths([newIndexPath!], withRowAnimation: .Automatic)
+        case .Delete:
+            tableView.deleteRowsAtIndexPaths([indexPath!], withRowAnimation: .Automatic)
+        case .Update:
+            let cell = tableView.cellForRowAtIndexPath(indexPath!) as! MessageTableViewCell
+            configureCell(cell, indexPath: indexPath!)
+        case .Move:
+            tableView.deleteRowsAtIndexPaths([indexPath!], withRowAnimation: .Automatic)
+            tableView.insertRowsAtIndexPaths([newIndexPath!], withRowAnimation: .Automatic)
+        }
+    }
+    
+    func controllerDidChangeContent(controller: NSFetchedResultsController) {
+        tableView.endUpdates()
+    }
+    
+    func controller(controller: NSFetchedResultsController, didChangeSection sectionInfo: NSFetchedResultsSectionInfo, atIndex sectionIndex: Int, forChangeType type: NSFetchedResultsChangeType) {
+        let indexSet = NSIndexSet(index: sectionIndex)
+        
+        switch type {
+        case .Insert:
+            tableView.insertSections(indexSet, withRowAnimation: .Automatic)
+        case .Delete:
+            tableView.deleteSections(indexSet, withRowAnimation: .Automatic)
+        default:
+            break
+        }
     }
 }
 
