@@ -146,10 +146,11 @@
                                                     <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <textView multipleTouchEnabled="YES" contentMode="scaleToFill" scrollEnabled="NO" editable="NO" text="message" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="NqC-jc-z5F">
+                                                <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" bounces="NO" scrollEnabled="NO" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" editable="NO" text="message" translatesAutoresizingMaskIntoConstraints="NO" id="NqC-jc-z5F">
                                                     <rect key="frame" x="132" y="8" width="420" height="39"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="12"/>
                                                     <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                                                    <dataDetectorType key="dataDetectorTypes" phoneNumber="YES" link="YES" address="YES" calendarEvent="YES"/>
                                                     <connections>
                                                         <outlet property="delegate" destination="BYZ-38-t0r" id="7TY-XS-yd0"/>
                                                     </connections>

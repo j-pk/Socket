@@ -12,6 +12,9 @@ import Socket_IO_Client_Swift
 
 class ViewController: UIViewController, UITextFieldDelegate {
     
+    //
+    // MARK: - Properties
+    //
     @IBOutlet weak var sendMessage: UIButton!
     @IBOutlet weak var messageTextField: UITextField!
     @IBOutlet weak var isTypingStatusLabel: UILabel!
@@ -46,11 +49,15 @@ class ViewController: UIViewController, UITextFieldDelegate {
         }
     }
     
+    //
+    // MARK: - viewDidLoad
+    //
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        tableView.estimatedRowHeight = 44.0 // Replace with your actual estimation
-        tableView.rowHeight = UITableViewAutomaticDimension
+        self.tableView.estimatedRowHeight = 44
+        self.tableView.rowHeight = UITableViewAutomaticDimension
+        
         navigationController?.navigationBar.tintColor = UIColor.grayColor()
         disconnectButton.enabled = false
         
@@ -71,14 +78,11 @@ class ViewController: UIViewController, UITextFieldDelegate {
         }
         
     }
-  
-    override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
-        super.touchesBegan(touches, withEvent: event)
-        messageTextField.resignFirstResponder()
-        view.endEditing(true)
-    }
     
-    //Pop & Seek Action options
+    //
+    // MARK: - Pop & Seek
+    // Pop & Seek Action options
+    //
     override func previewActionItems() -> [UIPreviewActionItem] {
         let openAction = UIPreviewAction(title: "Connect Socket", style: .Default) { (_, _) in
             print("Selected 'Open Socket'")
@@ -91,6 +95,9 @@ class ViewController: UIViewController, UITextFieldDelegate {
         return [openAction, cancelAction]
     }
     
+    //
+    // MARK: - Alert for username
+    //
     func userNameAlert() {
         let alertController = UIAlertController(title: "Username?", message: nil, preferredStyle: .Alert)
         alertController.addTextFieldWithConfigurationHandler(nil)
@@ -103,7 +110,10 @@ class ViewController: UIViewController, UITextFieldDelegate {
         alertController.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: nil))
         presentViewController(alertController, animated: true, completion: nil)
     }
-
+    
+    //
+    // MARK: - Handlers for Socket.IO data
+    //
     func addHandlers() {
 
         socket.on("error") { [unowned self] _, _ in
@@ -180,6 +190,9 @@ class ViewController: UIViewController, UITextFieldDelegate {
         }
     }
     
+    //
+    // MARK: - isTyping Feature
+    //
     func textField(textField: UITextField, shouldChangeCharactersInRange range: NSRange, replacementString string: String) -> Bool {
         socket.emit("typing")
         timer?.invalidate()
@@ -196,9 +209,12 @@ class ViewController: UIViewController, UITextFieldDelegate {
         dispatch_after(time, dispatch_get_main_queue(), block)
     }
     
+    //
+    // MARK: - TableView Cell configurations & scroll to latest Message
+    //
     func configureCell(cell: MessageTableViewCell, indexPath: NSIndexPath) {
         
-        cell.messageTextView.contentInset = UIEdgeInsetsMake(10, 5, 5, 5)
+        //cell.messageTextView.contentInset = UIEdgeInsetsMake(10, 5, 5, 5)
         
         if let person = fetchedResultsController.objectAtIndexPath(indexPath) as? Message {
             cell.usernameLabel.text = person.person?.name
@@ -209,7 +225,27 @@ class ViewController: UIViewController, UITextFieldDelegate {
         }
     
     }
-
+    
+    func scrollToLatestMessage(animated:Bool) {
+        let delay = 0.5 * Double(NSEC_PER_SEC)
+        let time = dispatch_time(DISPATCH_TIME_NOW, Int64(delay))
+        
+        dispatch_after(time, dispatch_get_main_queue(), {
+            
+            let numberOfSections = self.tableView.numberOfSections
+            let numberOfRows = self.tableView.numberOfRowsInSection(numberOfSections-1)
+            
+            if numberOfRows > 0 {
+                let indexPath = NSIndexPath(forRow: numberOfRows-1, inSection: (numberOfSections-1))
+                self.tableView.scrollToRowAtIndexPath(indexPath, atScrollPosition: UITableViewScrollPosition.Bottom, animated: animated)
+            }
+            
+        })
+    }
+    
+    //
+    // MARK: - All IBActions
+    //
     @IBAction func connectButtonPressed(sender: AnyObject) {
         if connected == 0 {
             addHandlers()
@@ -248,6 +284,9 @@ class ViewController: UIViewController, UITextFieldDelegate {
     }
 }
 
+//
+// MARK: - TableView DataSource & Delegate
+//
 extension ViewController: UITableViewDataSource {
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -266,14 +305,27 @@ extension ViewController: UITableViewDataSource {
 
 extension ViewController: UITableViewDelegate {
     func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-        let cell = tableView.dequeueReusableCellWithIdentifier("messageCell") as! MessageTableViewCell
         
-        print(cell.messageTextView.frame.height)
+        var cellHeight: CGFloat = 28.0
         
-        return 44.0
+        if let message = self.fetchedResultsController.objectAtIndexPath(indexPath) as? Message {
+            
+            // Add textview height
+            let cellText = message.chatMessage
+            let textWidth = self.tableView.frame.size.width - 80.0
+            let attributes = [NSFontAttributeName: UIFont(name: "HelveticaNeue-Light", size: 18)!]
+            let textHeight = cellText!.boundingRectWithSize(CGSizeMake(textWidth, CGFloat.max), options: NSStringDrawingOptions.UsesLineFragmentOrigin, attributes: attributes, context: nil).size.height
+            cellHeight += textHeight
+
+        }
+        
+        return cellHeight
     }
 }
 
+//
+// MARK: - NSFetchedResultsController Handlers
+//
 extension ViewController: NSFetchedResultsControllerDelegate {
     
     func controllerWillChangeContent(controller: NSFetchedResultsController) {
@@ -296,6 +348,7 @@ extension ViewController: NSFetchedResultsControllerDelegate {
     }
     
     func controllerDidChangeContent(controller: NSFetchedResultsController) {
+        scrollToLatestMessage(true)
         tableView.endUpdates()
     }
     
