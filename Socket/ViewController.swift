@@ -79,6 +79,14 @@ class ViewController: UIViewController, UITextFieldDelegate {
         
     }
     
+    override func viewDidLayoutSubviews() {
+        if tableView.contentSize.height > tableView.frame.size.height
+        {
+            let offset = CGPoint(x: 0, y: tableView.contentSize.height - tableView.frame.height)
+            tableView.setContentOffset(offset, animated: false)
+        }
+    }
+    
     //
     // MARK: - Pop & Seek
     // Pop & Seek Action options
