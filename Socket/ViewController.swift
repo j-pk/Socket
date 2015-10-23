@@ -50,7 +50,7 @@ class ViewController: UIViewController, UITextFieldDelegate {
     }
     
     //
-    // MARK: - viewDidLoad
+    // MARK: - viewDidLoad / LayoutSubviews
     //
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -235,7 +235,7 @@ class ViewController: UIViewController, UITextFieldDelegate {
     }
     
     func scrollToLatestMessage(animated:Bool) {
-        let delay = 0.5 * Double(NSEC_PER_SEC)
+        let delay = 0.5 
         let time = dispatch_time(DISPATCH_TIME_NOW, Int64(delay))
         
         dispatch_after(time, dispatch_get_main_queue(), {
@@ -245,9 +245,8 @@ class ViewController: UIViewController, UITextFieldDelegate {
             
             if numberOfRows > 0 {
                 let indexPath = NSIndexPath(forRow: numberOfRows-1, inSection: (numberOfSections-1))
-                self.tableView.scrollToRowAtIndexPath(indexPath, atScrollPosition: UITableViewScrollPosition.Bottom, animated: animated)
+                self.tableView.scrollToRowAtIndexPath(indexPath, atScrollPosition: .Bottom, animated: false)
             }
-            
         })
     }
     
